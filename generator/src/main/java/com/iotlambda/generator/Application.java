@@ -19,6 +19,7 @@ public class Application {
 
         System.out.println(String.format("Kafka server: %s", arguments.kafkaServer));
         System.out.println(String.format("Kafka topic: %s", arguments.kafkaTopic));
+        System.out.println(String.format("Timeout: %d", arguments.timeoutMs));
 
         run(arguments);
     }
@@ -27,7 +28,7 @@ public class Application {
         JsonSerializer serializer = new GsonSerializer();
         DataPublisher<String> publisher = new KafkaDataPublisher<>(args.kafkaServer, args.kafkaTopic);
 
-        DataGenerator<DeviceTelemetry> generator = new DeviceTelemetryGenerator(serializer, publisher, 500);
+        DataGenerator<DeviceTelemetry> generator = new DeviceTelemetryGenerator(serializer, publisher, args.timeoutMs);
 
         try {
             generator.start();

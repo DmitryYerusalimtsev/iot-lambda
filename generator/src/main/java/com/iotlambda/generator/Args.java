@@ -8,4 +8,7 @@ public class Args {
 
     @Parameter(names = "-kafkaTopic", description = "Topic n Kafka")
     public String kafkaTopic;
+
+    @Parameter(names = "-timeoutMs", description = "Generation timeout")
+    public int timeoutMs;
 }
