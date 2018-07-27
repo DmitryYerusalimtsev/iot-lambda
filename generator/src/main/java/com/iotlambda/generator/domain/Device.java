@@ -5,6 +5,12 @@ public class Device {
     private DeviceType type;
     private String serialNumber;
 
+    public Device(String name, DeviceType type, String serialNumber) {
+        this.name = name;
+        this.type = type;
+        this.serialNumber = serialNumber;
+    }
+
     public String getName() {
         return name;
     }

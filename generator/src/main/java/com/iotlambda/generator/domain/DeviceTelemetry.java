@@ -8,6 +8,15 @@ public class DeviceTelemetry {
     private Telemetry telemetry;
     private DateTime timestamp;
 
+    public DeviceTelemetry(
+            Device device,
+            Telemetry telemetry,
+            DateTime timestamp) {
+        this.device = device;
+        this.telemetry = telemetry;
+        this.timestamp = timestamp;
+    }
+
     public Device getDevice() {
         return device;
     }
