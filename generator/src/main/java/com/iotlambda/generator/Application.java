@@ -17,6 +17,9 @@ public class Application {
                 .build()
                 .parse(args);
 
+        System.out.println(String.format("Kafka server: %s", arguments.kafkaServer));
+        System.out.println(String.format("Kafka topic: %s", arguments.kafkaTopic));
+
         run(arguments);
     }
 
