@@ -2,13 +2,13 @@ package com.iotlambda.generator;
 
 import com.beust.jcommander.Parameter;
 
-public class Args {
+class Args {
     @Parameter(names = "-kafkaServer", description = "Kafka host. Format: host:port (localhost:9092)")
-    public String kafkaServer;
+    String kafkaServer = "localhost:9092";
 
     @Parameter(names = "-kafkaTopic", description = "Topic n Kafka")
-    public String kafkaTopic;
+    String kafkaTopic = "iot-telemetry";
 
     @Parameter(names = "-timeoutMs", description = "Generation timeout")
-    public int timeoutMs;
+    int timeoutMs = 500;
 }
