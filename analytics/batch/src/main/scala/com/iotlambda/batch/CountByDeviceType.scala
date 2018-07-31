@@ -1,5 +1,5 @@
-package com.iotlambda.batch
-
-class CountByDeviceType {
-
-}
+//package com.iotlambda.batch
+//
+//class CountByDeviceType {
+//
+//}
