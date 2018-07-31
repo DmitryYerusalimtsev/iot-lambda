@@ -2,15 +2,15 @@ package com.iotlambda.analytics.speed
 
 import com.iotlambda.analytics.common.AbstractSparkApplication
 import com.iotlambda.domain.DeviceTelemetry
-import org.apache.spark.sql.ForeachWriter
-import org.apache.spark.sql.types._
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.streaming.OutputMode
+import org.apache.spark.sql.types._
 
 object CountByDeviceTypeApplication extends AbstractSparkApplication {
 
   val deviceSchema = StructType(
     Array(
+      StructField("name", StringType, nullable = false),
       StructField("type", StringType, nullable = false),
       StructField("serialNumber", StringType, nullable = false)
     )
@@ -24,14 +24,13 @@ object CountByDeviceTypeApplication extends AbstractSparkApplication {
 
   val schema = StructType(
     Array(
-      StructField("device", deviceSchema, nullable = false),
-      StructField("telemetry", telemetrySchema, nullable = false),
-      StructField("timestamp", StringType, nullable = false)
+      StructField("device", deviceSchema, nullable = true),
+      StructField("telemetry", telemetrySchema, nullable = true),
+      StructField("timestamp", StringType, nullable = true)
     )
   )
 
   import spark.implicits._
-  //implicit val myObjEncoder = org.apache.spark.sql.Encoders.kryo[DeviceTelemetry]
 
   override protected def getAppName: String = "CountByDeviceType"
 
@@ -43,7 +42,7 @@ object CountByDeviceTypeApplication extends AbstractSparkApplication {
       .option("kafka.bootstrap.servers", "localhost:9092")
       .option("subscribe", "iot-telemetry")
       .load()
-      .select(from_json($"value".cast("string"), schema).alias("value"))
+      .select(from_json($"value".cast("string"), schema).as("value"))
       .select("value.*")
 
     df.printSchema()
@@ -54,32 +53,6 @@ object CountByDeviceTypeApplication extends AbstractSparkApplication {
       .format("console")
       .start()
 
-    //ds.printSchema()
-
-    //    val query = df.writeStream
-    //      .outputMode("append")
-    //      .format("console")
-    //      .start()
-
     query.awaitTermination()
-
-    //df.printSchema()
-    //val ds = df.as[DeviceTelemetry]
-
-    //ds.printSchema()
-  }
-}
-
-object Test extends ForeachWriter[DeviceTelemetry] {
-  override def open(partitionId: Long, version: Long): Boolean = {
-    true
-  }
-
-  override def process(value: DeviceTelemetry): Unit = {
-    println(value.telemetry.value)
-  }
-
-  override def close(errorOrNull: Throwable): Unit = {
-
   }
 }

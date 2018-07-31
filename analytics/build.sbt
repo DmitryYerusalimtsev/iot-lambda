@@ -28,6 +28,8 @@ lazy val speed = (project in file("speed"))
   .settings(
     commonSettings,
 
+    mainClass := Some("com.iotlambda.analytics.speed.CountByDeviceTypeApplication"),
+
     libraryDependencies ++= spark
   ).dependsOn(domain, common)
 
