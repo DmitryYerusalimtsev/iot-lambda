@@ -1,16 +1,16 @@
-package com.iotlambda.analytics.speed.countbydevice
+package com.iotlambda.analytics.speed.avgtelemetryvalue
 
 import com.iotlambda.analytics.speed.AbstractByDeviceTypeApp
+import org.apache.spark.sql.functions.window
 import org.apache.spark.sql.functions._
 
-object CountByDeviceTypeApplication extends AbstractByDeviceTypeApp {
+object AvgTelemetryValueByDeviceType extends AbstractByDeviceTypeApp {
 
   import spark.implicits._
 
-  override protected def getAppName: String = "CountByDeviceType"
+  override protected def getAppName: String = "AvgTelemetryValueByDeviceType"
 
   override protected def execute(): Unit = {
-
     val ds = readSourceDS()
 
     val countByType = ds
@@ -18,11 +18,13 @@ object CountByDeviceTypeApplication extends AbstractByDeviceTypeApp {
       .groupBy(
         window($"timestamp", "1 minute", "30 seconds"),
         $"device.type")
-      .count()
-      .select($"type", $"count")
-      .as[(String, Long)]
+      .agg(
+        avg($"telemetry.value").as("avg_value")
+      )
+      .select($"type", $"avg_value")
+      .as[(String, Double)]
       .map({
-        case (deviceType, count) => CountByType(deviceType, count)
+        case (deviceType, avg) => AvgByType(deviceType, avg)
       })
 
     writeToSink(countByType).awaitTermination()

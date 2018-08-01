@@ -2,7 +2,7 @@ package com.iotlambda.analytics.speed
 
 import org.apache.spark.sql.types.{DoubleType, StringType, StructField, StructType}
 
-private[countbydevice] object Schema {
+private[speed] object Schema {
   val deviceSchema = StructType(
     Array(
       StructField("name", StringType, nullable = false),
