@@ -22,6 +22,7 @@ abstract class AbstractSparkApplication {
       .config(sparkConf)
       .getOrCreate()
   }
+  spark.sparkContext.setLogLevel("ERROR")
 
   protected lazy val sc: SparkContext = spark.sparkContext
 
