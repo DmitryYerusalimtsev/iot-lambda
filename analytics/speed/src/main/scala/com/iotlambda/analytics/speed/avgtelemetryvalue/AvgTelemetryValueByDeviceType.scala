@@ -1,7 +1,6 @@
 package com.iotlambda.analytics.speed.avgtelemetryvalue
 
 import com.iotlambda.analytics.speed.AbstractByDeviceTypeApp
-import org.apache.spark.sql.functions.window
 import org.apache.spark.sql.functions._
 
 object AvgTelemetryValueByDeviceType extends AbstractByDeviceTypeApp {
