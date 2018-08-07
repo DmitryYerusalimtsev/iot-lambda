@@ -1,6 +1,6 @@
-package com.iotlambda.analytics.speed.avgtelemetryvalue
+package com.iotlambda.analytics.speed.jobs.avgtelemetryvalue
 
-import com.iotlambda.analytics.speed.AbstractByDeviceTypeApp
+import com.iotlambda.analytics.speed.jobs.AbstractByDeviceTypeApp
 import org.apache.spark.sql.functions._
 
 object AvgTelemetryValueByDeviceType extends AbstractByDeviceTypeApp {
@@ -20,12 +20,12 @@ object AvgTelemetryValueByDeviceType extends AbstractByDeviceTypeApp {
       .agg(
         avg($"telemetry.value").as("avg_value")
       )
-      .select($"type", $"avg_value")
-      .as[(String, Double)]
+      .select($"timestamp", $"type", $"avg_value")
+      .as[(String, String, Double)]
       .map({
-        case (deviceType, avg) => AvgByType(deviceType, avg)
+        case (timestamp, deviceType, avg) => AvgByType(timestamp, deviceType, avg)
       })
 
-    writeToSink(countByType).awaitTermination()
+    writeToSink(countByType, new AvgTelemetryByDeviceTypeSink(spark)).awaitTermination()
   }
 }

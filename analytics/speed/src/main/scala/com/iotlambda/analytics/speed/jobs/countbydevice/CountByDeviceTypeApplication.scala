@@ -1,7 +1,9 @@
-package com.iotlambda.analytics.speed.countbydevice
+package com.iotlambda.analytics.speed.jobs.countbydevice
 
-import com.iotlambda.analytics.speed.AbstractByDeviceTypeApp
+import com.iotlambda.analytics.speed.jobs.AbstractByDeviceTypeApp
+import org.apache.spark.sql.Dataset
 import org.apache.spark.sql.functions._
+import org.apache.spark.sql.streaming.{OutputMode, StreamingQuery}
 
 object CountByDeviceTypeApplication extends AbstractByDeviceTypeApp {
 
@@ -26,5 +28,13 @@ object CountByDeviceTypeApplication extends AbstractByDeviceTypeApp {
       })
 
     writeToSink(countByType).awaitTermination()
+  }
+
+  protected def writeToSink[T](ds: Dataset[T]): StreamingQuery = {
+    ds.writeStream
+      .outputMode(OutputMode.Append())
+      .format("console")
+      //.trigger(Trigger.Continuous("1 second"))
+      .start()
   }
 }

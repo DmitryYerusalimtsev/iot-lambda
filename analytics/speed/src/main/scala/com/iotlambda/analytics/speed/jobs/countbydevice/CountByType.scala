@@ -1,4 +1,4 @@
-package com.iotlambda.analytics.speed.countbydevice
+package com.iotlambda.analytics.speed.jobs.countbydevice
 
 private[countbydevice] case class CountByType(
                         deviceType: String,

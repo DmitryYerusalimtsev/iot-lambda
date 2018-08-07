@@ -1,4 +1,4 @@
-package com.iotlambda.analytics.speed
+package com.iotlambda.analytics.speed.jobs
 
 import org.apache.spark.sql.types.{DoubleType, StringType, StructField, StructType}
 

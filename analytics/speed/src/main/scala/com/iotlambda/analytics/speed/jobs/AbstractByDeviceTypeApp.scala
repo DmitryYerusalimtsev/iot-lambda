@@ -1,12 +1,13 @@
-package com.iotlambda.analytics.speed
+package com.iotlambda.analytics.speed.jobs
 
 import com.iotlambda.analytics.common.AbstractSparkApplication
 import com.iotlambda.domain.DeviceTelemetry
-import org.apache.spark.sql.Dataset
+import org.apache.spark.SparkConf
+import org.apache.spark.sql.{Dataset, ForeachWriter}
 import org.apache.spark.sql.functions.from_json
 import org.apache.spark.sql.streaming.{OutputMode, StreamingQuery}
 
-abstract class AbstractByDeviceTypeApp extends AbstractSparkApplication {
+private[jobs] abstract class AbstractByDeviceTypeApp extends AbstractSparkApplication {
 
   protected def readSourceDS(): Dataset[DeviceTelemetry] = {
     import spark.implicits._
@@ -23,12 +24,16 @@ abstract class AbstractByDeviceTypeApp extends AbstractSparkApplication {
     df.as[DeviceTelemetry]
   }
 
-  protected def writeToSink[T](ds: Dataset[T]): StreamingQuery = {
+  override protected def initSparkConf(conf: SparkConf): Unit = {
+    super.initSparkConf(conf)
+    conf.set("spark.cassandra.connection.host", "localhost")
+  }
+
+  protected def writeToSink[T](ds: Dataset[T], writer: ForeachWriter[T]): StreamingQuery = {
     ds.writeStream
       .outputMode(OutputMode.Append())
-      .format("console")
+      .foreach(writer)
       //.trigger(Trigger.Continuous("1 second"))
       .start()
   }
-
 }
