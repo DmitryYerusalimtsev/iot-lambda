@@ -15,7 +15,7 @@ object AvgTelemetryValueByDeviceType extends AbstractByDeviceTypeApp {
     val countByType = ds
       .withWatermark("timestamp", "10 seconds")
       .groupBy(
-        window($"timestamp", "1 minute", "30 seconds"),
+        window($"timestamp", "1 minute", "30 seconds").as("timestamp"),
         $"device.type")
       .agg(
         avg($"telemetry.value").as("avg_value")
@@ -25,6 +25,8 @@ object AvgTelemetryValueByDeviceType extends AbstractByDeviceTypeApp {
       .map({
         case (timestamp, deviceType, avg) => AvgByType(timestamp, deviceType, avg)
       })
+
+    countByType.printSchema()
 
     writeToSink(countByType, new AvgTelemetryByDeviceTypeSink(spark)).awaitTermination()
   }
